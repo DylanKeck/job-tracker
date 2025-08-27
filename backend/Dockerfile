@@ -1,16 +1,25 @@
-FROM node:20-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY tsconfig.json ./
-COPY src ./src
-RUN npm run build
+# Stage 1: Build the application
+FROM node:24 AS builder
+WORKDIR /home/node/app
 
-FROM node:20-alpine
-WORKDIR /app
-ENV NODE_ENV=production
+# Leverage caching by copying package.json and package-lock.json first
 COPY package*.json ./
-RUN npm ci --omit=dev
-COPY --from=build /app/dist ./dist
-EXPOSE 4000
-CMD ["node","dist/server.js"]
+RUN npm install -g npm@latest && npm install
+
+
+
+FROM node:24
+ARG NODE_ENV=development
+ENV NODE_ENV $NODE_ENV
+ARG PORT=4200
+ENV PORT $PORT
+EXPOSE $PORT 9229 9230
+
+WORKDIR ./home/node/app
+RUN npm install -g npm@latest
+COPY tsconfig.json ./
+COPY resolve-extensions-loader.mjs ./
+RUN chown node:node -R ./
+COPY --from=builder /home/node/app ./
+USER node
+CMD ["npm", "run", "dev"]

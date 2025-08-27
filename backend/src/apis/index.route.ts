@@ -1,8 +1,16 @@
-import { Router } from "express";
-import { healthController } from "./index.controller.js";
-import jobsRouter from "./jobs/jobs.route";
+import { Router } from 'express'
+import { indexController } from './index.controller'
 
-const r = Router();
-r.get("/health", healthController);
-r.use("/jobs", jobsRouter);
-export default r;
+// define the base path for the route
+
+const basePath = '/apis'
+
+const router = Router()
+
+router.route('/')
+    .get(indexController)
+
+export const indexRoute = {
+    router,
+    basePath
+}

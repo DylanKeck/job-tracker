@@ -1,10 +1,13 @@
-import "dotenv/config";
-import pg from "pg";
+import postgres from 'postgres'
 
-export const pool = new pg.Pool({
-    connectionString: process.env.DATABASE_URL
-});
-
-export async function pingDb() {
-    await pool.query("select 1");
-}
+export const sql = postgres({
+    user: process.env.POSTGRES_USER,
+    host: process.env.POSTGRES_HOST,
+    database: process.env.POSTGRES_DB,
+    password: process.env.POSTGRES_PASSWORD,
+    transform: {
+        column: {
+            from: postgres.toCamel, to: postgres.fromCamel
+        }
+    }
+})

@@ -1,10 +1,5 @@
-import type { Request, Response } from "express";
-import { ok, serverError } from "../utils/response.utils.js";
-import { pingDb } from "../utils/database.utils.js";
+import type { Request, Response } from 'express'
 
-export async function healthController(_req: Request, res: Response) {
-    try {
-        await pingDb();
-        ok(res, { ok: true });
-    } catch (e) { serverError(res, e); }
+export function indexController (request: Request, response: Response): void {
+    response.json('🤯 😬 😱')
 }
