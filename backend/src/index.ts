@@ -1,4 +1,4 @@
-import { App } from './App'
+import { App } from './App.ts'
 import {createClient} from "redis";
 import type {RedisClientType} from "redis";
 

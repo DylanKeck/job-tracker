@@ -1,6 +1,6 @@
 import type { Response } from 'express'
 
-import type { Status } from '../interfaces/Status'
+import type { Status } from './interfaces/Status'
 import type {ZodError} from "zod/v4";
 
 /**

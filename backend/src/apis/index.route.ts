@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import { indexController } from './index.controller'
+import { indexController } from './index.controller.ts'
 
 // define the base path for the route
 
-const basePath = '/apis'
+const basePath = '/api'
 
 const router = Router()
 
