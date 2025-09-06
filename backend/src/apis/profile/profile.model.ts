@@ -15,7 +15,8 @@ export const ProfileSchema = z.object({
         .nullable(),
     profileEmail: z.email('Please provide a valid email address.')
         .max(128, 'Email must be at most 128 characters.'),
-    profileLocation: z.string('Please provide a valid location.'),
+    profileLocation: z.string('Please provide a valid location.')
+        .nullable(),
     profilePasswordHash: z.string('Please provide a valid password hash.')
         .length(97, 'Password hash must 97 characters.'),
     profileResumeUrl: z.string('Please provide a valid resume URL.')
