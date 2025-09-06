@@ -47,3 +47,21 @@ export async function insertProfile(profile: Profile): Promise<string> {
     await sql`INSERT INTO profile (profile_id, profile_activation_token, profile_created_at, profile_email, profile_location, profile_password_hash, profile_resume_url, profile_username) VALUES (${profileId}, ${profileActivationToken}, ${profileCreatedAt}, ${profileEmail}, ${profileLocation}, ${profilePasswordHash}, ${profileResumeUrl}, ${profileUsername})`
     return 'Profile created successfully'
 }
+
+export async function selectProfileByActivationToken(profileActivationToken: string | null): Promise<Profile | null> {
+    const rowList = await sql`SELECT profile_id, profile_activation_token, profile_created_at, profile_email, profile_location, profile_password_hash, profile_resume_url, profile_username FROM profile WHERE profile_activation_token = ${profileActivationToken}`
+    const result = ProfileSchema.array().max(1).parse(rowList)
+    return result[0] ?? null
+}
+
+export async function updateProfile(profile: Profile): Promise<string> {
+    const {profileId, profileActivationToken, profileCreatedAt, profileEmail, profileLocation, profilePasswordHash, profileResumeUrl, profileUsername} = profile
+    await sql`UPDATE profile SET profile_activation_token = ${profileActivationToken}, profile_created_at = ${profileCreatedAt}, profile_email = ${profileEmail}, profile_location = ${profileLocation}, profile_password_hash = ${profilePasswordHash}, profile_resume_url = ${profileResumeUrl}, profile_username = ${profileUsername} WHERE profile_id = ${profileId}`
+    return 'Profile updated successfully'
+}
+
+export async function selectProfileByProfileEmail(profileEmail: string): Promise<Profile | null> {
+    const rowList = await sql`SELECT profile_id, profile_activation_token, profile_created_at, profile_email, profile_location, profile_password_hash, profile_resume_url, profile_username FROM profile WHERE profile_email = ${profileEmail}`
+    const result = ProfileSchema.array().max(1).parse(rowList)
+    return result[0] ?? null
+}
