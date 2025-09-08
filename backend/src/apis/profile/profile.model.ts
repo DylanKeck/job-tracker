@@ -29,8 +29,11 @@ export const ProfileSchema = z.object({
         .trim(),
 })
 
+export const PublicProfileSchema = ProfileSchema.omit({profileActivationToken: true, profilePasswordHash: true})
+
 // Inferred TypeScript type from the Zod schema (use this everywhere instead of `any`)
 export type Profile = z.infer<typeof ProfileSchema>;
+export type PublicProfile = z.infer<typeof PublicProfileSchema>;
 
 /**
  * Insert a new profile row into the database.
@@ -59,9 +62,20 @@ export async function updateProfile(profile: Profile): Promise<string> {
     await sql`UPDATE profile SET profile_activation_token = ${profileActivationToken}, profile_created_at = ${profileCreatedAt}, profile_email = ${profileEmail}, profile_location = ${profileLocation}, profile_password_hash = ${profilePasswordHash}, profile_resume_url = ${profileResumeUrl}, profile_username = ${profileUsername} WHERE profile_id = ${profileId}`
     return 'Profile updated successfully'
 }
+export async function updatePublicProfile(profile: PublicProfile): Promise<string> {
+    const {profileId, profileCreatedAt, profileEmail, profileLocation, profileResumeUrl, profileUsername} = profile
+    await sql`UPDATE profile SET profile_created_at = ${profileCreatedAt}, profile_email = ${profileEmail}, profile_location = ${profileLocation}, profile_resume_url = ${profileResumeUrl}, profile_username = ${profileUsername} WHERE profile_id = ${profileId}`
+    return 'Profile updated successfully'
+}
 
 export async function selectProfileByProfileEmail(profileEmail: string): Promise<Profile | null> {
     const rowList = await sql`SELECT profile_id, profile_activation_token, profile_created_at, profile_email, profile_location, profile_password_hash, profile_resume_url, profile_username FROM profile WHERE profile_email = ${profileEmail}`
     const result = ProfileSchema.array().max(1).parse(rowList)
+    return result[0] ?? null
+}
+
+export async function selectProfileByProfileId(profileId: string): Promise<PublicProfile | null> {
+    const rowList = await sql`SELECT profile_id, profile_created_at, profile_email, profile_location, profile_resume_url, profile_username FROM profile WHERE profile_id = ${profileId}`
+    const result = PublicProfileSchema.array().max(1).parse(rowList)
     return result[0] ?? null
 }
