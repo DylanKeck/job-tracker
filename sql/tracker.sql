@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS profile
     profile_username         varchar(100) UNIQUE NOT NULL
 );
 
--- jobs
+-- job
 CREATE TABLE IF NOT EXISTS job
 (
     job_id          uuid PRIMARY KEY,

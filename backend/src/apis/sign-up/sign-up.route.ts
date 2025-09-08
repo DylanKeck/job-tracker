@@ -6,7 +6,9 @@ const basePath = '/api/sign-up' as const
 
 const router = Router()
 
-router.route('/').post(signUpProfileController)
-rotuer.route('/activation/:profileActivationToken').get(activationController)
+router.route('/')
+    .post(signUpProfileController)
+router.route('/activation/:profileActivationToken')
+    .get(activationController)
 
 export const signUpRoute = {basePath, router}
