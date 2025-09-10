@@ -72,3 +72,4 @@ CREATE TABLE IF NOT EXISTS reminder
     FOREIGN KEY (reminder_job_id) REFERENCES job (job_id)
 );
 CREATE INDEX ON reminder (reminder_job_id);
+select inet_server_addr(), current_database();

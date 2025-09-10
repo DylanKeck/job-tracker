@@ -42,7 +42,7 @@ try {
     // Create a new profile object
     const profile: Profile = {
         profileId: uuidv7(),
-        profileActivationToken: null,
+        profileActivationToken,
         profileCreatedAt: null,
         profileEmail,
         profileLocation: null,
