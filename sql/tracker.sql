@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS job_note
 (
     job_note_id         uuid PRIMARY KEY,
     job_note_job_id     uuid NOT NULL,
-    job_note            text NOT NULL,
+    job_note_text            text NOT NULL,
     job_note_created_at timestamptz DEFAULT now(),
     FOREIGN KEY (job_note_job_id) REFERENCES job (job_id)
 );
