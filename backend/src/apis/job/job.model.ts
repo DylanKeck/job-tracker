@@ -15,25 +15,25 @@ export const JobSchema = z.object({
     jobSalaryMin: z.number('Please provide a valid min'),
     jobSource: z.string('Please provide a valid source'),
     jobStatus: z.string('Please provide a valid status'),
-    jobUpdate: z.coerce.date('Please provide a valid update'),
+    jobUpdatedAt: z.coerce.date('Please provide a valid update'),
 })
 export type Job = z.infer<typeof JobSchema>;
 
 export const JobNoteSchema = z.object({
-    jobNoteId: z.uuidv7('Please provide a valid uuid7 for jobId'),
-    jobNoteJobId: z.uuidv7('Please provide a valid uuid7 for jobJobId'),
+    jobNoteId: z.uuidv7('Please provide a valid uuid7 for jobNoteId'),
+    jobNoteJobId: z.uuidv7('Please provide a valid uuid7 for jobNoteJobId'),
     jobNoteText: z.string('Please provide a valid job note'),
     jobNoteCreatedAt: z.coerce.date('Please provide a valid date'),
 })
 export type JobNote = z.infer<typeof JobNoteSchema>;
 
 export async function insertJob(job: Job): Promise<string> {
-    const {jobId, jobProfileId, jobAppliedOn, jobCompany, jobCreatedAt, jobLocation, jobPostingUrl, jobRole, jobSalaryMax, jobSalaryMin, jobSource, jobStatus, jobUpdate} = job
+    const {jobId, jobProfileId, jobAppliedOn, jobCompany, jobCreatedAt, jobLocation, jobPostingUrl, jobRole, jobSalaryMax, jobSalaryMin, jobSource, jobStatus, jobUpdatedAt} = job
     await sql`INSERT INTO job (job_id, job_profile_id, job_applied_on, job_company, job_created_at, job_location, job_posting_url, job_role, job_salary_max, job_salary_min, job_source, job_status, job_updated_at) VALUES (${jobId}, ${jobProfileId}, ${jobAppliedOn}, ${jobCompany}, now(), ${jobLocation}, ${jobPostingUrl}, ${jobRole}, ${jobSalaryMax}, ${jobSalaryMin}, ${jobSource}, ${jobStatus}, now())`
     return 'Job added successfully'
 }
 export async function updateJob(job: Job): Promise<string> {
-    const {jobId, jobProfileId, jobAppliedOn, jobCompany, jobCreatedAt, jobLocation, jobPostingUrl, jobRole, jobSalaryMax, jobSalaryMin, jobSource, jobStatus, jobUpdate} = job
+    const {jobId, jobProfileId, jobAppliedOn, jobCompany, jobCreatedAt, jobLocation, jobPostingUrl, jobRole, jobSalaryMax, jobSalaryMin, jobSource, jobStatus, jobUpdatedAt} = job
     await sql`UPDATE job SET  job_applied_on = ${jobAppliedOn}, job_company = ${jobCompany}, job_created_at = ${jobCreatedAt}, job_location = ${jobLocation}, job_posting_url = ${jobPostingUrl}, job_role = ${jobRole}, job_salary_max = ${jobSalaryMax}, job_salary_min = ${jobSalaryMin}, job_source = ${jobSource}, job_status = ${jobStatus}, job_updated_at = now() WHERE job_id = ${jobId}`
     return 'Job updated successfully'
 }
@@ -60,7 +60,7 @@ export async function updateJobNote(jobNote: JobNote): Promise<string> {
     return 'Job note updated successfully'
 }
 
-export async function getJobNotesByJobId(jobId: string): Promise<JobNote[] | null> {
+export async function selectJobNotesByJobId(jobId: string): Promise<JobNote[] | null> {
     const rowList = await sql`SELECT job_note_id, job_note_job_id, job_note_text, job_note_created_at FROM job_note WHERE job_note_job_id = ${jobId}`;
     return JobNoteSchema.array().parse(rowList) ?? null;
 }
