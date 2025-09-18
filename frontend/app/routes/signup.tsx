@@ -19,7 +19,7 @@ export async function action({request}: Route.ActionArgs) {
         }
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(profile.profileEmail)) {
+        if (!emailRegex.test(profile.profileEmail as string)) {
             return { success: false, error: "Please enter a valid email address." };
         }
         // Password match validation
@@ -80,7 +80,7 @@ export default function Signup() {
         <>
             <div className="container mx-auto text-center">
                 <h1 className="text-4xl sm:text-5xl font-extrabold text-center pt-10 text-gray-900 tracking-tight">Welcome to Job Tracker</h1>
-                <p className="text-2xl">A smarter way to manage your applications.</p>
+                <p className="text-2xl">Welcome to Job Tracker.</p>
                 <div className="text-white flex flex-col items-center justify-center w-full bg-white shadow-xl rounded-3xl p-6 pb-10 space-y-10 transition-all">
                     {/* Error message above form */}
 

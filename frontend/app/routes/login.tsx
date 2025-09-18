@@ -130,8 +130,8 @@ export default function Login() {
                         </button>
                     </div>
                 )}
-                <h1 className="text-4xl sm:text-5xl font-extrabold text-center pt-10 text-gray-900 tracking-tight">Welcome to Commonality</h1>
-                <p className="text-2xl">Shared Interests. Real Connections.</p>
+                <h1 className="text-4xl sm:text-5xl font-extrabold text-center pt-10 text-gray-900 tracking-tight">Welcome to Job Tracker</h1>
+                <p className="text-2xl">Welcome to Job Tracker.</p>
                 <div className="text-white flex flex-col items-center justify-center w-full bg-white shadow-xl rounded-3xl p-6 pb-10 space-y-10 transition-all">
                     <div className="flex space-x-4 mb-6">
                         <button className="bg-gradient-to-br from-blue-500 to-blue-400 text-white px-4 py-2 rounded-lg shadow transition">
@@ -174,7 +174,7 @@ export default function Login() {
                                 }</button>
                             </IconContext.Provider>
                             {errors?.profilePassword ? <p className="text-red-500">{errors?.profilePassword.message}</p> : null}
-                            <button className=" flex justify-start text-blue-400 text-sm hover:text-red-600 hover:cursor-pointer my-2">Forgot Password?</button>
+                            {/*<button className=" flex justify-start text-blue-400 text-sm hover:text-red-600 hover:cursor-pointer my-2">Forgot Password?</button>*/}
                             <button
                                 type="submit"
                                 className="w-full bg-gradient-to-br from-green-400 to-green-500 hover:cursor-pointer hover:to-green-600 p-2 rounded text-white disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed" disabled={buttonDisabled}
