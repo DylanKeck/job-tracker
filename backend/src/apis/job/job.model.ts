@@ -133,6 +133,12 @@ export async function selectJobNotesByJobId(jobId: string): Promise<JobNote[] | 
     return JobNoteSchema.array().parse(rowList) ?? null;
 }
 
+export async function selectJobByRecentlyAdded(profileId: string): Promise<Job[] | null> {
+    // Query jobs by profileId ordered by creation date descending
+    const rowList = await sql`SELECT job_id, job_profile_id, job_applied_on, job_company, job_created_at, job_location, job_posting_url, job_role, job_salary_max, job_salary_min, job_source, job_status, job_updated_at FROM job WHERE job_profile_id = ${profileId} ORDER BY job_created_at DESC LIMIT 5`;
+    // Parse result using JobSchema array
+    return JobSchema.array().parse(rowList) ?? null;
+}
 /**
  * Deletes all job notes for a given jobId.
  *

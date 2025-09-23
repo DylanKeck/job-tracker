@@ -3,7 +3,7 @@ import {isLoggedInController} from "../../utils/controllers/is-logged-in.control
 import {
     deleteJobController,
     getAllJobsController,
-    getJobNotesController,
+    getJobNotesController, getJobsByRecentlyAddedController,
     postJobController,
     postJobNoteController,
     putJobController, putJobNoteController
@@ -23,6 +23,9 @@ router.route('/updateJobNote/:jobNoteId')
 
 router.route('/:profileId')
     .get(getAllJobsController)
+
+router.route('/recentJobs/:profileId')
+    .get(getJobsByRecentlyAddedController)
 router.route('/jobNotes/:jobId')
     .get(getJobNotesController)
     .post(isLoggedInController, postJobNoteController)

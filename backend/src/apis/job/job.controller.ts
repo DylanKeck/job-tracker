@@ -4,7 +4,7 @@ import {
     deleteJobNote,
     insertJob, insertJobNote,
     type Job, type JobNote, JobNoteSchema,
-    JobSchema, selectJobNotesByJobId,
+    JobSchema, selectJobByRecentlyAdded, selectJobNotesByJobId,
     selectJobsByProfileId,
     updateJob, updateJobNote
 } from "./job.model.ts";
@@ -245,6 +245,26 @@ export async function getJobNotesController(request: Request, response: Response
         }
         // Fetch job notes for the job
         const data = await selectJobNotesByJobId(jobId)
+        const status: Status = {status: 200, data, message: null}
+        response.json(status)
+    } catch (error) {
+        // Handle unexpected errors
+        console.error(error)
+        serverErrorResponse(response, null)
+    }
+}
+
+export async function getJobsByRecentlyAddedController(request: Request, response: Response): Promise<void> {
+    try {
+        // Validate profileId in request params
+        const validationResult = ProfileSchema.pick({profileId: true}).safeParse(request.params)
+        if(!validationResult.success) {
+            zodErrorResponse(response, validationResult.error)
+            return
+        }
+        const {profileId} = validationResult.data
+        // Fetch jobs for the profile
+        const data = await selectJobByRecentlyAdded(profileId)
         const status: Status = {status: 200, data, message: null}
         response.json(status)
     } catch (error) {
