@@ -32,6 +32,7 @@ export default function Jobs({loaderData}: Route.ComponentProps) {
     return (
         <div>
             <h2>My Jobs</h2>
+            <a href="/add-job">Add a new job</a>
             <table>
                 <thead>
                 <tr>
