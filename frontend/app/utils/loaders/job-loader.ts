@@ -19,7 +19,7 @@ export async function getJobLoaderData(request: Request) {
     if (cookies) {
         requestHeaders.append("Cookie", cookies)
     }
-    const jobsFetch = await fetch(`${process.env.REST_API_URL}/job/${profileId}`,
+    const jobsFetch = await fetch(`${process.env.REST_API_URL}/job/recentJobs/${profileId}`,
         {headers: requestHeaders}
     ).then(res => res.json())
     const jobs = JobSchema.array().parse(jobsFetch.data || [])

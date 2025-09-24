@@ -15,21 +15,24 @@ export async function action({request}: Route.ActionArgs) {
         const profile = Object.fromEntries(formData);
         // Basic validation
         if (!profile.profileUsername || !profile.profileEmail || !profile.profilePassword || !profile.profilePasswordConfirm) {
-            return { success: false, error: "All fields are required." };
+            return {success: false, error: "All fields are required."};
         }
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(profile.profileEmail as string)) {
-            return { success: false, error: "Please enter a valid email address." };
+            return {success: false, error: "Please enter a valid email address."};
         }
         // Password match validation
         if (profile.profilePassword !== profile.profilePasswordConfirm) {
-            return { success: false, error: "Passwords do not match." };
+            return {success: false, error: "Passwords do not match."};
         }
         // Password length validation
-        if (profile.profilePassword.length < 8) {
-            return { success: false, error: "Password must be at least 8 characters long." };
+        if (typeof profile.profilePassword === "string") {
+
+         if (profile.profilePassword.length < 8) {
+            return {success: false, error: "Password must be at least 8 characters long."};
         }
+    }
         const response = await fetch(`${process.env.REST_API_URL}/sign-up`, {
             method: 'POST',
             headers: {

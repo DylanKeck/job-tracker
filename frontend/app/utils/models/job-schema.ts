@@ -24,3 +24,4 @@ export const JobSchema = z.object({
 })
 
 // TypeScript type inferred from JobSchema
+export type Job = z.infer<typeof JobSchema>

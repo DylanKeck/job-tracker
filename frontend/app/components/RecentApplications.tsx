@@ -1,4 +1,4 @@
-import type {Job} from "~/utils/types/job";
+import type {Job} from "~/utils/models/job-schema";
 
 export default function RecentApplications({jobs}: {jobs: Job[]}) {
     return (
