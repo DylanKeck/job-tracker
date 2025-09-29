@@ -2,7 +2,7 @@ import {Router} from "express";
 import {isLoggedInController} from "../../utils/controllers/is-logged-in.controller.ts";
 import {
     deleteJobController,
-    getAllJobsController,
+    getAllJobsController, getJobAndJobNoteController,
     getJobNotesController, getJobsByRecentlyAddedController,
     postJobController,
     postJobNoteController,
@@ -16,6 +16,9 @@ router.route('/')
     .post(isLoggedInController, postJobController)
 router.route('/updateJob/:jobId')
     .put(isLoggedInController, putJobController)
+
+router.route('/jobAndNote/:jobId')
+    .get(getJobAndJobNoteController)
 
 
 router.route('/updateJobNote/:jobNoteId')

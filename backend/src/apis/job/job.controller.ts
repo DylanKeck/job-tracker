@@ -4,7 +4,7 @@ import {
     deleteJobNote,
     insertJob, insertJobNote,
     type Job, type JobNote, JobNoteSchema,
-    JobSchema, selectJobByRecentlyAdded, selectJobNotesByJobId,
+    JobSchema, selectJobAndJobNoteByJobId, selectJobByRecentlyAdded, selectJobNotesByJobId,
     selectJobsByProfileId,
     updateJob, updateJobNote
 } from "./job.model.ts";
@@ -305,6 +305,41 @@ export async function deleteJobController(request: Request, response: Response):
         // Delete the job itself
         const result = await deleteJobByJobId(jobId)
         const status: Status = {status: 200, data: null, message: result}
+        response.json(status)
+    } catch (error) {
+        // Handle unexpected errors
+        console.error(error)
+        serverErrorResponse(response, null)
+    }
+}
+/** * Retrieves a job and all its notes by jobId.
+ *
+ * Validates the jobId from request params, checks session authorization,
+ * fetches the job and its notes from the database, and returns them in the response.
+ *
+ * @param request - Express request object containing params
+ * @param response - Express response object for sending responses
+ * @returns Promise<void>
+ */
+
+export async function getJobAndJobNoteController(request: Request, response: Response): Promise<void> {
+    try {
+        // Validate jobId in request params
+        const validationResult = JobSchema.pick({jobId: true}).safeParse(request.params)
+        if(!validationResult.success) {
+            zodErrorResponse(response, validationResult.error)
+            return
+        }
+        const {jobId} = validationResult.data
+        // Get profile from session for authorization
+        const profile = request.session?.profile
+        const profileIdFromSession = profile?.profileId
+        if(profileIdFromSession === undefined || profileIdFromSession === null) {
+            response.json({ status: 401, message: 'Unauthorized, please log in', data: null })
+            return
+        }
+        const result = await selectJobAndJobNoteByJobId(jobId)
+        const status: Status = {status: 200, data: result, message: null}
         response.json(status)
     } catch (error) {
         // Handle unexpected errors

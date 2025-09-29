@@ -16,8 +16,8 @@ export const JobSchema = z.object({
     jobLocation: z.string('Please provide a valid location'),
     jobPostingUrl: z.string('Please provide a valid url'),
     jobRole: z.string('Please provide a valid role'),
-    jobSalaryMax: z.number('Please provide a valid max'),
-    jobSalaryMin: z.number('Please provide a valid min'),
+    jobSalaryMax: z.coerce.number('Please provide a valid max'),
+    jobSalaryMin: z.coerce.number('Please provide a valid min'),
     jobSource: z.string('Please provide a valid source'),
     jobStatus: z.string('Please provide a valid status'),
     jobUpdatedAt: z.coerce.date('Please provide a valid update'),
@@ -40,6 +40,28 @@ export const JobNoteSchema = z.object({
 
 // TypeScript type inferred from JobNoteSchema
 export type JobNote = z.infer<typeof JobNoteSchema>;
+
+export const JobAndJobNoteSchema = z.object({
+    jobId: z.uuidv7('Please provide a valid uuid7 for jobId'),
+    jobProfileId: z.uuidv7('Please provide a valid uuid7 for jobProfileId'),
+    jobAppliedOn: z.coerce.date('Please provide a valid date'),
+    jobCompany: z.string('Please provide a company name')
+        .min(1, 'Must be at least 1 character'),
+    jobCreatedAt: z.coerce.date('Please provide a valid date'),
+    jobLocation: z.string('Please provide a valid location'),
+    jobPostingUrl: z.string('Please provide a valid url'),
+    jobRole: z.string('Please provide a valid role'),
+    jobSalaryMax: z.coerce.number('Please provide a valid max'),
+    jobSalaryMin: z.coerce.number('Please provide a valid min'),
+    jobSource: z.string('Please provide a valid source'),
+    jobStatus: z.string('Please provide a valid status'),
+    jobUpdatedAt: z.coerce.date('Please provide a valid update'),
+    jobNoteId: z.uuidv7('Please provide a valid uuid7 for jobNoteId'),
+    jobNoteJobId: z.uuidv7('Please provide a valid uuid7 for jobNoteJobId'),
+    jobNoteText: z.string('Please provide a valid job note'),
+    jobNoteCreatedAt: z.coerce.date('Please provide a valid date'),
+})
+export type JobAndJobNote = z.infer<typeof JobAndJobNoteSchema>;
 
 /**
  * Inserts a new job into the database.
@@ -149,4 +171,17 @@ export async function deleteJobNote(jobId: string): Promise<string> {
     // Delete job notes from the database
     await sql`DELETE FROM job_note WHERE job_note_job_id = ${jobId}`;
     return 'Job notes deleted successfully';
+}
+/**
+ * Selects a job and its associated notes by jobId.
+ *
+ * @param jobId - The job ID to filter by
+ * @returns Job object with associated notes or null if not found
+ */
+
+export async function selectJobAndJobNoteByJobId(jobId: string): Promise<Job | null> {
+    // Query job and its notes by jobId
+    const rowList = await sql`SELECT job_id, job_profile_id, job_applied_on, job_company, job_created_at, job_location, job_posting_url, job_role, job_salary_max, job_salary_min, job_source, job_status, job_updated_at, job_note_id, job_note_job_id, job_note_text, job_note_created_at FROM job LEFT JOIN job_note ON job.job_id = job_note.job_note_job_id WHERE job.job_id = ${jobId}`;
+    // Parse result using JobSchema array
+    return JobAndJobNoteSchema.array().parse(rowList)[0] ?? null;
 }
