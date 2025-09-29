@@ -1,6 +1,6 @@
 import type {Route} from "../../.react-router/types/app/+types/root";
 import {getSession} from "~/utils/session.server";
-import {redirect} from "react-router";
+import {Link, redirect} from "react-router";
 import {JobSchema} from "~/utils/models/job-schema";
 import type {Job} from "~/utils/models/job-schema";
 export async function loader ({request}: Route.LoaderArgs) {
@@ -47,7 +47,9 @@ export default function Jobs({loaderData}: Route.ComponentProps) {
                 <tbody>
                 {jobs.map((job: Job) => (
                     <tr key={job.jobId}>
-                        <td>{job.jobRole}</td>
+                        <td>
+                            <Link to={`job-details?id=${job.jobId}`}>{job.jobRole}</Link>
+                        </td>
                         <td>{job.jobCompany}</td>
                         <td>{job.jobLocation}</td>
                         <td>{job.jobSalaryMin}-{job.jobSalaryMax}</td>

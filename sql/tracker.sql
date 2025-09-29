@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS job
     job_salary_max  int,
     job_salary_min  int,
     job_source      text, -- (LinkedIn, Indeed, referral, etc.)
-    job_status      text CHECK (job_status IN ('saved', 'applied', 'interview', 'offer', 'rejected')) DEFAULT 'saved',
+    job_status      text CHECK (job_status IN ('Saved', 'Applied', 'Interview', 'Offer', 'Rejected')) DEFAULT 'Saved',
     job_updated_at  timestamptz                                                                       DEFAULT now(),
     FOREIGN KEY (job_profile_id) REFERENCES profile (profile_id)
 );
