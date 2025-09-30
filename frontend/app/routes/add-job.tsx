@@ -2,6 +2,7 @@ import {Form, redirect} from "react-router";
 import type {Route} from "../../.react-router/types/app/+types/root";
 import {getSession} from "~/utils/session.server";
 import {v7 as uuidv7} from "uuid";
+import EditJob from "~/components/EditJob";
 
 export async function action({request}: Route.ActionArgs) {
     try {
@@ -60,60 +61,9 @@ console.log(newJob);
 
 export default function AddJob() {
     return (
-        <div>
+        <>
             <h1 className="text-4xl font-bold mb-4">New Job</h1>
-            <Form method="POST" encType="multipart/form-data" id="addJob">
-                <input type="text"
-                name="jobRole"
-                placeholder="Job Role"
-                />
-                <input
-                type="text"
-                name="jobCompany"
-                placeholder="Company Name"
-                />
-                <input
-                type="text"
-                name="jobLocation"
-                placeholder="Location"
-                />
-                <input
-                type="url"
-                name="jobPostingUrl"
-                placeholder="Job Posting URL"
-                />
-                <input
-                    type="datetime-local"
-                    name="jobAppliedOn"
-                    placeholder="Date Applied"
-                />
-                <input
-                type="number"
-                name="jobSalaryMin"
-                placeholder="Minimum Salary"
-                />
-                <input
-                type="number"
-                name="jobSalaryMax"
-                placeholder="Maximum Salary"
-                />
-                <input
-                type="text"
-                name="jobSource"
-                placeholder="Job Source"
-                />
-                <select
-                name="jobStatus"
-                defaultValue="Saved"
-                >
-                    <option value="Applied">Applied</option>
-                    <option value="Interviw">Interviewing</option>
-                    <option value="Offer">Offered</option>
-                    <option value="Rejected">Rejected</option>
-                    <option value="Saved">Saved</option>
-                </select>
-                <button type="submit">Add Job</button>
-            </Form>
-        </div>
+           <EditJob />
+        </>
     )
 }

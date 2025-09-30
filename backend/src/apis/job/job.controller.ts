@@ -331,13 +331,7 @@ export async function getJobAndJobNoteController(request: Request, response: Res
             return
         }
         const {jobId} = validationResult.data
-        // Get profile from session for authorization
-        const profile = request.session?.profile
-        const profileIdFromSession = profile?.profileId
-        if(profileIdFromSession === undefined || profileIdFromSession === null) {
-            response.json({ status: 401, message: 'Unauthorized, please log in', data: null })
-            return
-        }
+
         const result = await selectJobAndJobNoteByJobId(jobId)
         const status: Status = {status: 200, data: result, message: null}
         response.json(status)
