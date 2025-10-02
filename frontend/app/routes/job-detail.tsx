@@ -1,4 +1,4 @@
-import {Form, redirect} from "react-router";
+import {Form, redirect, useFetcher, useSubmit} from "react-router";
 import type {Route} from "../../.react-router/types/app/+types/root";
 import {getSession} from "~/utils/session.server";
 import {useState} from "react";
@@ -31,7 +31,6 @@ export async function loader({params, request}: Route.LoaderArgs) {
         {headers: requestHeaders})
         .then(res => res.json())
     const job = JobAndJobNoteSchema.parse(jobFetch.data);
-    console.log(job);
     return {job}
 }
 
@@ -40,7 +39,26 @@ export async function action({request}: Route.ActionArgs) {
         request.headers.get("Cookie")
     )
     const formData = await request.formData();
-    const newJobNote = Object.fromEntries(formData);
+    const data = Object.fromEntries(formData);
+    const url = new URL(request.url)
+    const jobId = url.searchParams.get("id");
+    if (!jobId) {
+        return redirect("/jobs");
+    }
+    const requestHeaders = new Headers()
+    requestHeaders.append('Content-Type', 'application/json')
+    requestHeaders.append('Authorization', session.data?.authorization || '')
+    const cookie = request.headers.get('Cookie')
+    if (cookie) {
+        requestHeaders.append('Cookie', cookie)
+    }
+    if (data.jobNoteBody) {
+        const response = await fetch(`${process.env.REST_API_URL}/job/jobNotes/${jobId}`, {
+            method: 'POST',
+            headers: requestHeaders,
+            body: JSON.stringify(data)
+        })
+    }
     const profileId = session.data.profile?.profileId
     if (!profileId) {
         return redirect("/login");
@@ -51,6 +69,9 @@ export default function JobDetail({loaderData}: Route.ComponentProps) {
     const {job} = loaderData as any;
     const [editMode, setEditMode] = useState(false);
     const [addingNote, setAddingNote] = useState(false);
+    const [noteText, setNoteText] = useState(job.jobNoteText || "");
+    const fetcher = useFetcher()
+    const submit = useSubmit()
     return (
         <div>
             <h2>{job.jobRole}, {job.jobCompany}</h2>
@@ -58,7 +79,7 @@ export default function JobDetail({loaderData}: Route.ComponentProps) {
             <button onClick={() => setEditMode(true)}>Edit Job</button>
             <button onClick={() => setAddingNote(true)}>Add Note</button>
             </div>
-            {addingNote && (
+            {addingNote && !job.jobNoteId && (
                 <Form method="post">
                     <input
                     type={"text"}
@@ -69,6 +90,32 @@ export default function JobDetail({loaderData}: Route.ComponentProps) {
                 </Form>
             )
             }
+            {addingNote && job.jobNoteId && (
+                <Form method="put">
+                    <input
+                        type="text"
+                        name="jobNoteText"
+                        placeholder="Enter note"
+                        defaultValue={noteText}
+                        onChange={(e) => setNoteText(e.target.value)}
+                    />
+                    <input type="hidden" name="jobNoteId" defaultValue={job.jobNoteId} />
+                    <button onClick={() => {
+                        const jobNote = {
+                            jobNoteId: job.jobNoteId,
+                            jobNoteText: noteText,
+                            jobNoteCreatedAt: job.jobNoteCreatedAt,
+                            jobNoteJobId: job.jobNoteJobId
+                        }
+                        fetcher.submit(jobNote, {
+                            method: 'put',
+                        action: "/api/update-job-note",
+                        encType: "application/json"})
+                        setAddingNote(false)
+                    }} type="submit">Update Note</button>
+                </Form>
+
+            )}
             {editMode ? (
                 <div>
                 <EditJob job={job} />

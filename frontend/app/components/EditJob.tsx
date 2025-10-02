@@ -63,7 +63,7 @@ export default function EditJob({job = {}}: Props) {
                     defaultValue={job.jobStatus || 'Saved'}
                 >
                     <option value="Applied">Applied</option>
-                    <option value="Interviw">Interviewing</option>
+                    <option value="Interview">Interviewing</option>
                     <option value="Offer">Offered</option>
                     <option value="Rejected">Rejected</option>
                     <option value="Saved">Saved</option>
