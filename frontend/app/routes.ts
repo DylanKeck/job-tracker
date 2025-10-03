@@ -9,4 +9,6 @@ export default [
     route("add-job","routes/add-job.tsx"),
     route("jobs/job-details","routes/job-detail.tsx"),
     route("api/update-job-note", "routes/update-job-note.tsx"),
+    route("api/logout", "routes/logout.tsx"),
+    route("profile","routes/profile.tsx"),
 ] satisfies RouteConfig;
