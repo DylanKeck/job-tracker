@@ -1,4 +1,5 @@
 import type {Job} from "~/utils/models/job-schema";
+import {Link} from "react-router";
 
 export default function RecentApplications({jobs}: {jobs: Job[]}) {
     return (
@@ -19,10 +20,12 @@ export default function RecentApplications({jobs}: {jobs: Job[]}) {
                         <tbody>
                         {jobs.map((job) => (
                             <tr key={job.jobId}>
+                                <Link to={`/jobs/job-details?id=${job.jobId}`}>
                                 <td>{job.jobRole}</td>
                                 <td>{job.jobCompany}</td>
                                 <td>{job.jobAppliedOn?.toString()}</td>
                                 <td>{job.jobStatus}</td>
+                                </Link>
                                 </tr>)
                         )}
                         </tbody>
