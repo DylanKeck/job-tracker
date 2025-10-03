@@ -40,9 +40,13 @@ export const JobAndJobNoteSchema = z.object({
     jobSource: z.string('Please provide a valid source'),
     jobStatus: z.string('Please provide a valid status'),
     jobUpdatedAt: z.coerce.date('Please provide a valid update'),
-    jobNoteId: z.uuidv7('Please provide a valid uuid7 for jobNoteId'),
-    jobNoteJobId: z.uuidv7('Please provide a valid uuid7 for jobNoteJobId'),
-    jobNoteText: z.string('Please provide a valid job note'),
-    jobNoteCreatedAt: z.coerce.date('Please provide a valid date'),
+    jobNoteId: z.uuidv7('Please provide a valid uuid7 for jobNoteId')
+        .nullish(),
+    jobNoteJobId: z.uuidv7('Please provide a valid uuid7 for jobNoteJobId')
+        .nullish(),
+    jobNoteText: z.string('Please provide a valid job note')
+        .nullish(),
+    jobNoteCreatedAt: z.coerce.date('Please provide a valid date')
+        .nullish(),
 })
 export type JobAndJobNote = z.infer<typeof JobAndJobNoteSchema>;

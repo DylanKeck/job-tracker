@@ -27,7 +27,6 @@ export async function action({request}: Route.ActionArgs) {
             jobStatus: newJob.jobStatus,
             jobUpdatedAt: null
         }
-console.log(newJob);
         if (!profileId) {
             return {success: false, error: "Unauthorized", status: 401};
         }
@@ -46,7 +45,6 @@ console.log(newJob);
             body: JSON.stringify(job)
         })
         const data = await response.json();
-        console.log(job)
 
         if (!response.ok) {
             throw new Error('Failed to create job');
@@ -63,7 +61,7 @@ export default function AddJob() {
     return (
         <>
             <h1 className="text-4xl font-bold mb-4">New Job</h1>
-           <EditJob />
+           <EditJob  />
         </>
     )
 }

@@ -20,4 +20,9 @@ export async function action({request}: Route.ActionArgs) {
         headers: requestHeaders,
         body: JSON.stringify(formData)
     })
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error('Failed to update job note')
+    }
+    return {success: true, message: "Updated Job Note", status: 200};
 }
