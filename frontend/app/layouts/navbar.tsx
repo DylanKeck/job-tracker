@@ -1,7 +1,8 @@
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router";
 import { useState } from "react";
 import type {Route} from "../../.react-router/types/app/+types/root";
 import {getSession} from "~/utils/session.server";
+import {redirect} from "react-router";
 
 
 /**
@@ -19,7 +20,7 @@ export async function loader({request}: Route.LoaderArgs) {
     const profileId = session.data.profile?.profileId
     if(!profileId){
         // No logged-in user
-        return {profile: null}
+        return redirect("/login");
     }
     // Prepare request headers for API calls (if needed)
     const requestHeaders = new Headers()
@@ -72,13 +73,12 @@ export default function Navbar({loaderData}: Route.ComponentProps) {
                         <NavLink to="/dashboard" className={linkClass}>Dashboard</NavLink>
                         <NavLink to="/jobs" className={linkClass}>Jobs</NavLink>
                         <NavLink to="/reminders" className={linkClass}>Reminders</NavLink>
-                        <NavLink to="/analytics" className={linkClass}>Analytics</NavLink>
                     </nav>
 
                     {/* Right actions: Add Job and Profile avatar */}
                     <div className="hidden md:flex items-center gap-3">
                         <Link
-                            to="/jobs/new"
+                            to="/add-job"
                             className="bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium px-3 py-1.5 rounded-lg transition"
                         >
                             + Add Job
