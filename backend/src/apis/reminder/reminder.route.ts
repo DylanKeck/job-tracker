@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {isLoggedInController} from "../../utils/controllers/is-logged-in.controller.ts";
 import {
-    deleteReminderController,
+    deleteReminderController, getAllRemindersController,
     getRemindersByJobIdController,
     postReminderController, putReminderController
 } from "./reminder.controller.ts";
@@ -11,6 +11,8 @@ const router = Router();
 
 router.route('/')
     .post(isLoggedInController, postReminderController)
+router.route('/:profileId')
+    .get(isLoggedInController, getAllRemindersController)
 
 router.route('/:reminderId')
     .delete(isLoggedInController, deleteReminderController)

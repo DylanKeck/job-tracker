@@ -6,10 +6,11 @@ import {
     deleteReminder,
     insertReminder,
     type Reminder,
-    ReminderSchema,
+    ReminderSchema, selectAllReminders,
     selectRemindersByJobId,
     updateReminder
 } from "./reminder.model.ts";
+import {ProfileSchema} from "../profile/profile.model.ts";
 
 
 /**
@@ -146,6 +147,41 @@ export async function getRemindersByJobIdController (request: Request, response:
         console.error(error);
         serverErrorResponse(response, null);
     }
+}
+
+/**
+ * Retrieves all reminders for a given profile.
+ *
+ * Validates the profileId from request params, checks session authorization,
+ * fetches all reminders associated with the profile from the database,
+ * and returns them in the response.
+ *
+ * @param request - Express request object containing params
+ * @param response - Express response object for sending responses
+ * @returns Promise<void>
+ */
+
+export async function getAllRemindersController (request: Request, response: Response): Promise<void> {
+    try {
+        const paramsValidationResult = ProfileSchema.pick({ profileId: true }).safeParse(request.params);
+        if (!paramsValidationResult.success) {
+            zodErrorResponse(response, paramsValidationResult.error);
+            return;
+        }
+        const { profileId } = paramsValidationResult.data;
+        const profile = request.session?.profile;
+        const sessionProfileId = profile?.profileId;
+        if (!sessionProfileId || sessionProfileId !== profileId) {
+            response.json({ status: 400, message: 'You are not allowed to perform this task', data: null });
+            return;
+        }
+        const data = await selectAllReminders(profileId)
+        const status: Status = { status: 200, message: null, data };
+        response.json(status);
+    } catch (error) {
+        console.error(error);
+        serverErrorResponse(response, null);
+}
 }
 
 /**

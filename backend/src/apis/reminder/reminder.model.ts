@@ -72,3 +72,19 @@ export async function selectRemindersByJobId(reminderJobId: string): Promise<Rem
     // Parse result using ReminderSchema array
     return ReminderSchema.array().parse(rowList)
 }
+
+/**
+ * Selects all reminders for jobs belonging to a given profileId.
+ *
+ * @param profileId - The profile ID to filter reminders by
+ * @returns Array of Reminder objects or null if none found
+ */
+export async function selectAllReminders(profileId: string): Promise<Reminder[] | null> {
+    // Query all reminders for jobs belonging to the given profileId
+    const rowList = await sql`SELECT r.reminder_id, r.reminder_job_id, r.reminder_at, r.reminder_created_at, r.reminder_done, r.reminder_label 
+                              FROM reminder r
+                              JOIN job j ON r.reminder_job_id = j.job_id
+                              WHERE j.job_profile_id = ${profileId}`
+    // Parse result using ReminderSchema array
+    return ReminderSchema.array().parse(rowList)
+}
