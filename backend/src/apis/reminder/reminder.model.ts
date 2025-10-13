@@ -11,7 +11,7 @@ export const ReminderSchema = z.object({
     reminderJobId: z.uuidv7('please provide a valid uuid7 for reminderJobId'),
     reminderAt: z.coerce.date('please provide a valid date for reminderAt'),
     reminderCreatedAt: z.coerce.date('please provide a valid date for reminderCreated'),
-    reminderDone: z.boolean('please provide a valid boolean'),
+    reminderDone: z.coerce.boolean('please provide a valid boolean'),
     reminderLabel: z.string('reminderLabel must be a string')
         .min(1, 'reminderLabel must be at least 1 character')
         .max(100, 'reminderLabel must be at most 100 characters')
@@ -46,6 +46,19 @@ export async function updateReminder(reminder: Reminder): Promise<string> {
     // Update reminder in the database
     await sql`UPDATE reminder SET reminder_at = ${reminderAt}, reminder_done = ${reminderDone}, reminder_label = ${reminderLabel} WHERE reminder_id = ${reminderId}`
     return 'Updated reminder';
+}
+
+/**
+ * Updates only the reminder_done status of a reminder.
+ *
+ * @param reminderId - The ID of the reminder to update
+ * @param reminderDone - The new done status (true/false)
+ * @returns Success message string
+ */
+export async function updateReminderDone(reminderId: string, reminderDone: boolean): Promise<string> {
+    // Update only the reminder_done field in the database
+    await sql`UPDATE reminder SET reminder_done = ${reminderDone} WHERE reminder_id = ${reminderId}`
+    return 'Updated reminder done status';
 }
 
 /**

@@ -1,20 +1,31 @@
 import type {Route} from "../../.react-router/types/app/+types/root";
 import {getSession} from "~/utils/session.server";
-import {Form, redirect, useNavigation} from "react-router";
+import {Form, redirect, useFetcher, useNavigation} from "react-router";
 import {useEffect, useRef, useState} from "react";
 import type {Job} from "~/utils/types/job";
 import {JobSchema} from "~/utils/models/job-schema";
 import {ReminderSchema, type Reminder} from "~/utils/models/reminder-schema";
 import {v7 as uuidv7} from "uuid";
+import ReminderItem from "~/components/ReminderItem";
 
+/**
+ * Loader for reminders route.
+ * Fetches reminders and jobs for the authenticated user.
+ * Redirects to login if no profileId is found in session.
+ * @param {Route.LoaderArgs} args - Loader arguments containing the request.
+ * @returns {Promise<{reminders: Reminder[], jobs: Job[]}>}
+ */
 export async function loader({request}: Route.LoaderArgs) {
+    // Get session and profileId from cookies
     const session = await getSession(
         request.headers.get("Cookie")
     )
     const profileId = session.data.profile?.profileId
     if (!profileId) {
+        // Redirect to login if not authenticated
         return redirect("/login");
     }
+    // Prepare headers for API requests
     const requestHeaders = new Headers()
     requestHeaders.append('Content-Type', 'application/json')
     requestHeaders.append('Authorization', session.data?.authorization || '')
@@ -22,6 +33,7 @@ export async function loader({request}: Route.LoaderArgs) {
     if (cookie) {
         requestHeaders.append('Cookie', cookie)
     }
+    // Fetch reminders and jobs from REST API
     const reminderFetch = await fetch(`${process.env.REST_API_URL}/reminder/${profileId}`,
         {headers: requestHeaders}).then(res => res.json())
     const reminders = ReminderSchema.array().parse(reminderFetch.data)
@@ -31,12 +43,44 @@ export async function loader({request}: Route.LoaderArgs) {
     return {reminders, jobs}
 }
 
+/**
+ * Action for reminders route.
+ * Handles adding a new reminder and toggling reminder completion.
+ * @param {Route.ActionArgs} args - Action arguments containing the request.
+ * @returns {Promise<null|void>}
+ */
 export async function action({request}: Route.ActionArgs) {
-
+    // Get session from cookies
     const session = await getSession(request.headers.get("Cookie"));
-
+    // Parse form data
     const formData = await request.formData()
     const reminder = Object.fromEntries(formData)
+    const intent = formData.get("_action")
+    // Prepare headers for API requests
+    const requestHeaders = new Headers()
+    requestHeaders.append('Content-Type', 'application/json')
+    requestHeaders.append('Authorization', session.data?.authorization || '')
+    const cookie = request.headers.get('Cookie')
+    if (cookie) {
+        requestHeaders.append('Cookie', cookie)
+    }
+    // Toggle reminder done status
+    if (intent === "toggleDone") {
+        const reminderId = formData.get("reminderId")
+        const reminderDone = formData.get("reminderDone") === "true"
+        // Update reminder done status via API
+        const res = await fetch(`${process.env.REST_API_URL}/reminder/reminderDone/${reminderId}`, {
+            method: 'PUT',
+            headers: requestHeaders,
+            body: JSON.stringify({reminderDone}),
+        })
+        const data = await res.json() // API response, not used
+        if (!res.ok) {
+            throw new Error('Failed to update reminder status')
+        }
+        return null
+    }
+    // Add new reminder via API
     const reminderObject = {
         reminderId: uuidv7(),
         reminderJobId: reminder.reminderJobId,
@@ -45,48 +89,57 @@ export async function action({request}: Route.ActionArgs) {
         reminderDone: false,
         reminderCreatedAt: null
     }
-    const requestHeaders = new Headers()
-    requestHeaders.append('Content-Type', 'application/json')
-    requestHeaders.append('Authorization', session.data?.authorization || '')
-    const cookie = request.headers.get('Cookie')
-    if (cookie) {
-        requestHeaders.append('Cookie', cookie)
-    }
     const response = await fetch(`${process.env.REST_API_URL}/reminder`, {
         method: 'POST',
         headers: requestHeaders,
         body: JSON.stringify(reminderObject)
     })
-    const data = await response.json()
+    const data = await response.json() // API response, not used
     if (!response.ok) {
         throw new Error('Failed to add reminder')
     }
 }
 
-
+/**
+ * Reminder component.
+ * Displays reminders and jobs, allows adding and editing reminders.
+ * @param {Route.ComponentProps} props - Component props containing loaderData.
+ * @returns {JSX.Element}
+ */
 export default function Reminder({loaderData}: Route.ComponentProps) {
+    // Destructure reminders and jobs from loaderData
     const {reminders, jobs} = loaderData as any
+    // State for add/edit reminder forms
     const [addReminder, setAddReminder] = useState(false)
-    const[editReminder, setEditReminder] = useState(false)
+    const [editReminder, setEditReminder] = useState(false)
     const [selectedJob, setSelectedJob] = useState<string>("")
+    // Map reminders to their associated jobs (unused)
     const reminderJobs = reminders.map((reminder: Reminder) =>
         jobs.find((job: Job) => job.jobId === reminder.reminderJobId)
     );
     const navigation = useNavigation();
     const wasSubmitting = useRef(false);
 
-    // Effect to close edit mode after submit completes
+    const fetcher = useFetcher();
+    // Determine optimistic done state for reminders (unused)
+    const optimisticDone = fetcher.formData
+        ? fetcher.formData.get("reminderDone") === "true"
+        : reminders.reminderDone;
+
+    // Effect to close add reminder form after submit completes
     useEffect(() => {
         if (navigation.state === "submitting") wasSubmitting.current = true;
         if (wasSubmitting.current && navigation.state === "idle") {
-            setAddReminder(false);        // ✅ close only after submit completes
+            setAddReminder(false);        //  close only after submit completes
             wasSubmitting.current = false;
         }
     }, [navigation.state, setAddReminder]);
     return (
         <>
             <h1>Reminders</h1>
+            {/* Button to open add reminder form */}
             <button onClick={() => setAddReminder(true)}>Add Reminder</button>
+            {/* Add Reminder Form */}
             {addReminder && (
                 <Form method="post" id="reminderForm">
                     <input
@@ -108,6 +161,7 @@ export default function Reminder({loaderData}: Route.ComponentProps) {
                         required
                     >
                         <option value="" disabled>Select a job</option>
+                        {/* Render job options for selection */}
                         {jobs.map((job: Job) => (
                             <option id="selectedItem" key={job.jobId} value={job.jobId}>
                                 {job.jobRole} at {job.jobCompany}
@@ -118,18 +172,18 @@ export default function Reminder({loaderData}: Route.ComponentProps) {
                 </Form>
             )}
             <div>
+                {/* Render each reminder item */}
                 {reminders.map((reminder: Reminder) => (
-                    <ul key={reminder.reminderId}>
-                        <li>{reminder.reminderLabel}</li>
-                        <li>{reminder.reminderAt.toLocaleDateString()}</li>
-                        <li>{reminder.reminderDone}</li>
-                        <li>For {reminderJobs[0].jobRole} at {reminderJobs[0].jobCompany}</li>
+                    <>
+                        <ReminderItem key={reminder.reminderId} reminder={reminder} jobs={jobs}/>
+                        {/* Button to open edit reminder form */}
                         <button onClick={() => setEditReminder(true)}>Edit Reminder</button>
-                    </ul>
+                    </>
                 ))}
             </div>
+            {/* Edit Reminder Form */}
             {editReminder && (
-            <Form method="put" id="reminderForm">
+                <Form method="put" id="reminderForm">
                     <input
                         type="text"
                         name="reminderLabel"
@@ -143,7 +197,7 @@ export default function Reminder({loaderData}: Route.ComponentProps) {
                         required
                     />
 
-            </Form>
+                </Form>
             )}
         </>
     )

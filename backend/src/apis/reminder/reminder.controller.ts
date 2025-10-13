@@ -8,7 +8,7 @@ import {
     type Reminder,
     ReminderSchema, selectAllReminders,
     selectRemindersByJobId,
-    updateReminder
+    updateReminder, updateReminderDone
 } from "./reminder.model.ts";
 import {ProfileSchema} from "../profile/profile.model.ts";
 
@@ -103,6 +103,42 @@ export async function putReminderController (request: Request, response: Respons
             reminderLabel
         }
         const result = await updateReminder(reminder)
+        const status: Status = { status: 200, message: result, data: null };
+        response.json(status);
+    } catch (error) {
+        // Handle unexpected errors
+        console.error(error);
+        serverErrorResponse(response, null);
+    }
+}
+
+export async function putReminderDoneController (request: Request, response: Response): Promise<void> {
+    try {
+        // Validate reminderId in request params
+        const paramsValidationResult = ReminderSchema.pick({ reminderId: true }).safeParse(request.params);
+        // Validate reminder data in request body
+        const validationResult = ReminderSchema.pick({ reminderDone: true }).safeParse(request.body);
+        if (!paramsValidationResult.success) {
+            zodErrorResponse(response, paramsValidationResult.error);
+            return;
+        }
+        if (!validationResult.success) {
+            zodErrorResponse(response, validationResult.error);
+            return;
+        }
+        // Destructure validated reminder fields
+        const { reminderId } = paramsValidationResult.data;
+        const { reminderDone } = validationResult.data;
+        // Get profile from session for authorization
+        const profile = request.session?.profile;
+        const profileId = profile?.profileId;
+        if (!profileId) {
+            response.json({ status: 400, message: 'You are not allowed to perform this task', data: null });
+            return;
+        }
+        // Create updated reminder object
+
+        const result = await updateReminderDone(reminderId, reminderDone)
         const status: Status = { status: 200, message: result, data: null };
         response.json(status);
     } catch (error) {

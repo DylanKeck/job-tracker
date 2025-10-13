@@ -3,7 +3,7 @@ import {isLoggedInController} from "../../utils/controllers/is-logged-in.control
 import {
     deleteReminderController, getAllRemindersController,
     getRemindersByJobIdController,
-    postReminderController, putReminderController
+    postReminderController, putReminderController, putReminderDoneController
 } from "./reminder.controller.ts";
 
 const basePath = '/api/reminder';
@@ -13,6 +13,8 @@ router.route('/')
     .post(isLoggedInController, postReminderController)
 router.route('/:profileId')
     .get(isLoggedInController, getAllRemindersController)
+router.route('/reminderDone/:reminderId')
+    .put(isLoggedInController, putReminderDoneController)
 
 router.route('/:reminderId')
     .delete(isLoggedInController, deleteReminderController)
