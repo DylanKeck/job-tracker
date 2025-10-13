@@ -80,6 +80,19 @@ export async function action({request}: Route.ActionArgs) {
         }
         return null
     }
+    if (intent === "deleteReminder") {
+        const reminderId = formData.get("reminderId")
+        // Delete reminder via API
+        const res = await fetch(`${process.env.REST_API_URL}/reminder/${reminderId}`, {
+            method: 'DELETE',
+            headers: requestHeaders,
+        })
+        const data = await res.json() // API response, not used
+        if (!res.ok) {
+            throw new Error('Failed to delete reminder')
+        }
+        return null
+    }
     // Add new reminder via API
     const reminderObject = {
         reminderId: uuidv7(),
@@ -119,7 +132,7 @@ export default function Reminder({loaderData}: Route.ComponentProps) {
     );
     const navigation = useNavigation();
     const wasSubmitting = useRef(false);
-
+    const deleteFetcher = useFetcher();
     const fetcher = useFetcher();
     // Determine optimistic done state for reminders (unused)
     const optimisticDone = fetcher.formData
@@ -178,6 +191,13 @@ export default function Reminder({loaderData}: Route.ComponentProps) {
                         <ReminderItem key={reminder.reminderId} reminder={reminder} jobs={jobs}/>
                         {/* Button to open edit reminder form */}
                         <button onClick={() => setEditReminder(true)}>Edit Reminder</button>
+                        <button onClick={() => {
+                            deleteFetcher.submit(
+                                {reminderId: reminder.reminderId, _action: "deleteReminder"},
+                                {method: "delete"}
+
+                            )
+                        }}>X</button>
                     </>
                 ))}
             </div>
