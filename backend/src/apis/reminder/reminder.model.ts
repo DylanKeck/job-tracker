@@ -101,3 +101,20 @@ export async function selectAllReminders(profileId: string): Promise<Reminder[] 
     // Parse result using ReminderSchema array
     return ReminderSchema.array().parse(rowList)
 }
+
+export async function selectUpcomingReminders(profileId: string): Promise<Reminder[] | null> {
+    const rowList = await sql`SELECT reminder_id,
+                                     reminder_job_id,
+                                     reminder_at,
+                                     reminder_created_at,
+                                     reminder_done,
+                                     reminder_label
+                              FROM reminder
+                              JOIN job ON job_id = reminder_job_id
+                              WHERE job_profile_id = ${profileId}
+                                AND reminder_at >= now()
+                                AND reminder_done = false
+                              ORDER BY reminder_at ASC
+                              LIMIT 3`
+    return ReminderSchema.array().parse(rowList)
+}
