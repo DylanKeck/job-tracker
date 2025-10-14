@@ -1,6 +1,10 @@
 import RecentApplications from "~/components/RecentApplications";
 import type {Route} from "../../.react-router/types/app/routes/+types/dashboard";
 import {getJobLoaderData} from "~/utils/loaders/job-loader";
+import UpcomingReminders from "~/components/UpcomingReminders";
+import {getReminderLoaderData} from "~/utils/loaders/reminder-loader";
+import {getSession} from "~/utils/session.server";
+import {redirect} from "react-router";
 
 
 /**
@@ -12,7 +16,19 @@ import {getJobLoaderData} from "~/utils/loaders/job-loader";
  */
 export async function loader({request}: Route.LoaderArgs) {
     // Delegate job data loading to utility function
-    return await getJobLoaderData(request)
+    const session = await getSession(
+        request.headers.get("Cookie")
+    )
+    if (!session.has("profile")) {
+        return redirect("/login");
+    }
+   const [jobData, reminderData] = await Promise.all([
+         getJobLoaderData(request),
+         getReminderLoaderData(request),
+        ]);
+    return {
+        jobs: jobData.jobs,
+        reminders: reminderData.reminders};
 }
 
 /**
@@ -23,13 +39,14 @@ export async function loader({request}: Route.LoaderArgs) {
  */
 export default function Dashboard({loaderData}: Route.ComponentProps) {
     // Destructure jobs from loaderData
-    const {jobs} = loaderData
+    const {jobs, reminders} = loaderData
     return (
         <>
             <div className="flex flex-col items-center justify-center min-h-screen py-2">
                 <h1 className="text-4xl font-bold mb-4">Dashboard</h1>
                 <p className="text-lg">Welcome to your dashboard!</p>
             </div>
+            <UpcomingReminders reminders={reminders} />
             {/* Render recent job applications */}
             <RecentApplications jobs={jobs}/>
         </>

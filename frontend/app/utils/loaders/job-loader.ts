@@ -6,9 +6,6 @@ export async function getJobLoaderData(request: Request) {
     const session = await getSession(
         request.headers.get("Cookie")
     )
-    if (!session.has("profile")) {
-        return redirect("/login");
-    }
     const profile = session.data.profile
     const profileId = profile?.profileId
 
@@ -19,9 +16,9 @@ export async function getJobLoaderData(request: Request) {
     if (cookies) {
         requestHeaders.append("Cookie", cookies)
     }
-    const jobsFetch = await fetch(`${process.env.REST_API_URL}/job/recentJobs/${profileId}`,
+    const response = await fetch(`${process.env.REST_API_URL}/job/recentJobs/${profileId}`,
         {headers: requestHeaders}
     ).then(res => res.json())
-    const jobs = JobSchema.array().parse(jobsFetch.data || [])
+    const jobs = JobSchema.array().parse(response.data || [])
     return {jobs}
 }
