@@ -38,6 +38,11 @@ export async function loader({request}: Route.LoaderArgs) {
     ).then(res => res.json());
     // Validate and parse jobs data
     const allJobs = JobSchema.array().parse(profileJobsFetch.data);
+    const applicationDataFetch = await fetch(`${process.env.REST_API_URL}/job/${profileId}/weekly`, {
+        headers: requestHeaders
+    }).then(res => res.json());
+    console.log(applicationDataFetch.data);
+
    const [jobData, reminderData] = await Promise.all([
          getJobLoaderData(request),
          getReminderLoaderData(request),
@@ -45,7 +50,7 @@ export async function loader({request}: Route.LoaderArgs) {
     return {
         jobs: jobData.jobs,
         reminders: reminderData.reminders,
-    allJobs};
+    allJobs, applicationDataFetch};
 }
 
 /**
@@ -56,7 +61,7 @@ export async function loader({request}: Route.LoaderArgs) {
  */
 export default function Dashboard({loaderData}: Route.ComponentProps) {
     // Destructure jobs from loaderData
-    const {jobs, reminders, allJobs} = loaderData
+    const {jobs, reminders, allJobs, applicationDataFetch} = loaderData
 
     const interviewCount = allJobs.filter(job => job.jobStatus === 'Interview').length;
     const offerCount = allJobs.filter(job => job.jobStatus === 'Offer').length;
@@ -73,7 +78,7 @@ export default function Dashboard({loaderData}: Route.ComponentProps) {
                 <KPI label="Interviews" value={interviewCount} accent="amber" />
                 <KPI label="Offers" value={offerCount} accent="emerald" />
                 <KPI label="success Rate" value={successRate} accent="violet" />
-                <ApplicationsChart data={jobs} />
+                <ApplicationsChart data={applicationDataFetch.data} />
                 <UpcomingReminders reminders={reminders} />
                 {/* Render recent job applications */}
                 <RecentApplications jobs={jobs}/>

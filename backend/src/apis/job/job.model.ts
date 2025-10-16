@@ -193,7 +193,7 @@ export async function selectJobAndJobNoteByJobId(jobId: string): Promise<Job | n
 export async function getWeeklyApplications(profileId: string, weeks = 4) {
     const safeWeeks = Math.max(1, Math.min(12, Number(weeks) || 4));
 
-    const rows = await sql<{ week_label: string; applications: number }[]>`
+    const rows = await sql<{ weekLabel: string; applications: number }[]>`
         WITH series AS (
             SELECT generate_series(
                            date_trunc('week', now()) - ((${safeWeeks}::int - 1) * interval '1 week'),
@@ -202,8 +202,8 @@ export async function getWeeklyApplications(profileId: string, weeks = 4) {
                    ) AS wk
         )
         SELECT
-            to_char(series.wk, '"Wk" IW')           AS week_label,
-            COALESCE(COUNT(j.job_id), 0)::int      AS applications
+            to_char(series.wk, '"Wk" IW') AS "weekLabel",     -- 👈 quote to keep camelCase
+            COALESCE(COUNT(j.job_id), 0)::int AS applications
         FROM series
                  LEFT JOIN job j
                            ON j.job_profile_id = ${profileId}
@@ -212,5 +212,7 @@ export async function getWeeklyApplications(profileId: string, weeks = 4) {
         ORDER BY series.wk;
     `;
 
-    return rows.map(r => ({ week: r.week_label, applications: r.applications }));
+    // use the camelCase property you selected above
+    return rows.map(r => ({ week: r.weekLabel, applications: r.applications }));
 }
+
