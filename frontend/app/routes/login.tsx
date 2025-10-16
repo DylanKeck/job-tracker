@@ -90,7 +90,7 @@ export async function action({request}: Route.ActionArgs) {
         }
 
         // Redirect to home page on successful login
-        return redirect('/', {headers: responseHeaders});
+        return redirect('/dashboard', {headers: responseHeaders});
     } catch (error) {
         // Handle unexpected errors
         console.error('Sign-in action error:', error);
