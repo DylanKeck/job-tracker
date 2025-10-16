@@ -1,7 +1,7 @@
 import type {Request, Response} from "express";
 import {
     deleteJobByJobId,
-    deleteJobNote,
+    deleteJobNote, getWeeklyApplications,
     insertJob, insertJobNote,
     type Job, type JobNote, JobNoteSchema,
     JobSchema, selectJobAndJobNoteByJobId, selectJobByRecentlyAdded, selectJobNotesByJobId,
@@ -339,5 +339,43 @@ export async function getJobAndJobNoteController(request: Request, response: Res
         // Handle unexpected errors
         console.error(error)
         serverErrorResponse(response, null)
+    }
+}
+
+export async function getWeeklyApplicationsController(request: Request, response: Response): Promise<void> {
+    try {
+        const paramsValidation = ProfileSchema.pick({ profileId: true }).safeParse(request.params);
+        if (!paramsValidation.success) {
+            zodErrorResponse(response, paramsValidation.error);
+            return;
+        }
+        const { profileId } = paramsValidation.data;
+
+        // Optional auth check (follow your existing pattern)
+        const profile = request.session?.profile;
+        const profileIdFromSession = profile?.profileId;
+        if (profileIdFromSession === undefined || profileIdFromSession === null) {
+            response.json({ status: 401, message: 'Unauthorized, please log in', data: null });
+            return;
+        }
+        // (Optional) If you want to ensure users can only fetch their own data, enforce:
+        // if (profileIdFromSession !== profileId) {
+        //   response.json({ status: 403, message: 'Forbidden', data: null });
+        //   return;
+        // }
+
+        // Read ?weeks=... and clamp to [1, 12]
+        const rawWeeks = Number(request.query.weeks);
+        const weeks = Math.max(1, Math.min(12, Number.isFinite(rawWeeks) ? rawWeeks : 4));
+
+        // Fetch weekly applications
+        const data = await getWeeklyApplications(profileId, weeks);
+
+        const status: Status = { status: 200, data, message: null };
+        response.json(status);
+    } catch (error) {
+        console.error(error);
+        serverErrorResponse(response, null);
+
     }
 }

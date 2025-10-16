@@ -3,7 +3,7 @@ import {isLoggedInController} from "../../utils/controllers/is-logged-in.control
 import {
     deleteJobController,
     getAllJobsController, getJobAndJobNoteController,
-    getJobNotesController, getJobsByRecentlyAddedController,
+    getJobNotesController, getJobsByRecentlyAddedController, getWeeklyApplicationsController,
     postJobController,
     postJobNoteController,
     putJobController, putJobNoteController
@@ -16,6 +16,8 @@ router.route('/')
     .post(isLoggedInController, postJobController)
 router.route('/updateJob/:jobId')
     .put(isLoggedInController, putJobController)
+router.route('/:profileId/weekly')
+    .get(getWeeklyApplicationsController)
 
 router.route('/jobAndNote/:jobId')
     .get(getJobAndJobNoteController)
