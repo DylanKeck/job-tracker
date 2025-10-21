@@ -96,110 +96,137 @@ export default function Signup() {
 
 
     return (
-        <>
-            <div className="container mx-auto text-center">
-                <h1 className="text-4xl sm:text-5xl font-extrabold text-center pt-10 text-gray-900 tracking-tight">Welcome to Job Tracker</h1>
-                <p className="text-2xl">Welcome to Job Tracker.</p>
-                <div className="text-white flex flex-col items-center justify-center w-full bg-white shadow-xl rounded-3xl p-6 pb-10 space-y-10 transition-all">
-                    {/* Error message above form */}
-                    <div className="flex space-x-4 mb-6">
-                        {/* Login and Sign Up buttons */}
-                        <button className="hover:cursor-pointer bg-gradient-to-br from-gray-500 to-gray-400 text-white px-4 py-2 rounded-lg shadow hover:to-indigo-700 transition" onClick={() => navigate('/login')}>
-                            Login
-                        </button>
-                        <button className="bg-gradient-to-br from-blue-500 to-blue-400 text-white px-4 py-2 rounded-lg shadow transition">
-                            Sign Up
-                        </button>
-                    </div>
-                    <Form id="signup" method="post" className="bg-gradient-to-br from-gray-100 to-gray-200 shadow-lg p-6 rounded-xl space-y-4 w-full max-w-sm">
-                        <div className='relative'>
-                            {/* Username input with icon */}
-                            <ImProfile className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"/>
-                            <input
-                                type="text"
-                                name="profileUsername"
-                                placeholder="Username"
-                                className="w-full p-2 pl-10 rounded bg-zinc-500 text-white"
-                                value={formData.profileUsername}
-                                onChange={(e) => setFormData({...formData, profileUsername: e.target.value})}
-                                required
-                            />
-                        </div>
-                        <div className='relative'>
-                            {/* Email input with icon */}
-                            <MdOutlineEmail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"/>
-                            <input
-                                type="email"
-                                name="profileEmail"
-                                placeholder="Email"
-                                className="w-full p-2 pl-10 rounded bg-zinc-500 text-white"
-                                value={formData.profileEmail}
-                                onChange={(e) => setFormData({...formData, profileEmail: e.target.value})}
-                                required
-                            />
-                        </div>
-                        <div className='relative'>
-                            {/* Password input with icon and show/hide toggle */}
-                            <RiLockPasswordLine
-                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"/>
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                name="profilePassword"
-                                placeholder="Password"
-                                className="w-full p-2 pl-10 rounded bg-zinc-500 text-white"
-                                value={formData.profilePassword}
-                                onChange={(e) => setFormData({...formData, profilePassword: e.target.value})}
-                                required
-                            />
-                            <IconContext.Provider value={{size: '1.5em'}}>
-                                <button type='button'
-                                        onClick={() => setShowPassword((prev) => !prev)}
-                                        className='text-sm text-white absolute right-2 top-1/2 transform -translate-y-1/2'>{showPassword ?
-                                    <BiHide/> : <BiShow/>
-                                }</button>
-                            </IconContext.Provider>
-                        </div>
-                        <div className='relative'>
-                            {/* Confirm password input with icon and show/hide toggle */}
-                            <GiConfirmed className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"/>
-                            <input
-                                type={showConfirmPassword ? "text" : "password"}
-                                name="profilePasswordConfirm"
-                                placeholder="Confirm Password"
-                                className="w-full p-2 pl-10 rounded bg-zinc-500 text-white"
-                                value={formData.profilePasswordConfirm}
-                                onChange={(e) => setFormData({...formData, profilePasswordConfirm: e.target.value})}
-                                required
-                            />
-                            <IconContext.Provider value={{size: '1.5em'}}>
-                                <button type='button'
-                                        onClick={() => setShowConfirmPassword((prev) => !prev)}
-                                        className='text-sm text-white absolute right-2 top-1/2 transform -translate-y-1/2'>{showConfirmPassword ?
-                                    <BiHide/> : <BiShow/>}</button>
-                            </IconContext.Provider>
-                        </div>
-                        {/* Local error message display */}
-                        {errorMessage && <p className='text-red-600 text-sm '>{errorMessage}</p>}
-                        {/* Submit button disables if any field is empty */}
-                        <button
-                            type="submit"
-                            className={`w-full p-2 rounded text-white ${formData.profileUsername && formData.profileEmail && formData.profilePassword && formData.profilePasswordConfirm ? 'bg-gradient-to-br from-green-400 to-green-500 hover:cursor-pointer hover:to-green-600' : 'bg-gray-400 cursor-not-allowed'}`}
-                            disabled={
-                                !formData.profileUsername ||
-                                !formData.profileEmail ||
-                                !formData.profilePassword ||
-                                !formData.profilePasswordConfirm
-                            }
-                        >Sign Up
-                        </button>
-                        {/* Server error message display */}
-                        <p className="text-red-600 text-sm text-center min-h-[1.25rem]">
-                            {actionData?.error || ""}
-                        </p>
-                    </Form>
+        <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center px-6 py-10">
+        <div className="w-full max-w-md space-y-6">
+        {/* Heading */}
+    <div className="text-center">
+        <h1 className="text-2xl sm:text-3xl font-semibold">Create your account</h1>
+        <p className="text-slate-400 text-sm mt-1">Join Job Tracker</p>
+    </div>
 
+    {/* Card */}
+    <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl space-y-6">
+        {/* Auth toggle */}
+        <div className="flex gap-3 justify-center">
+            <button
+                type="button"
+                onClick={() => navigate("/login")}
+                className="px-4 py-2 rounded-lg border border-slate-700 text-slate-300 bg-slate-800 hover:bg-slate-700 transition"
+            >
+                Login
+            </button>
+            <button
+                type="button"
+                className="px-4 py-2 rounded-lg bg-violet-600 text-white shadow hover:bg-violet-500 transition"
+            >
+                Sign Up
+            </button>
+        </div>
+
+        <Form id="signup" method="post" className="space-y-4">
+            {/* Username */}
+            <div className="space-y-1">
+                <label className="block text-sm text-slate-300">Username</label>
+                <div className="relative">
+                    <ImProfile className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                        type="text"
+                        name="profileUsername"
+                        placeholder="e.g. john_doe"
+                        className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 pl-10 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-600"
+                        value={formData.profileUsername}
+                        onChange={(e) => setFormData({ ...formData, profileUsername: e.target.value })}
+                        required
+                    />
                 </div>
             </div>
-        </>
+
+            {/* Email */}
+            <div className="space-y-1">
+                <label className="block text-sm text-slate-300">Email</label>
+                <div className="relative">
+                    <MdOutlineEmail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                        type="email"
+                        name="profileEmail"
+                        placeholder="you@example.com"
+                        className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 pl-10 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-600"
+                        value={formData.profileEmail}
+                        onChange={(e) => setFormData({ ...formData, profileEmail: e.target.value })}
+                        required
+                    />
+                </div>
+            </div>
+
+            {/* Password */}
+            <div className="space-y-1">
+                <label className="block text-sm text-slate-300">Password</label>
+                <div className="relative">
+                    <RiLockPasswordLine className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                        type={showPassword ? "text" : "password"}
+                        name="profilePassword"
+                        placeholder="••••••••"
+                        className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 pl-10 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-600"
+                        value={formData.profilePassword}
+                        onChange={(e) => setFormData({ ...formData, profilePassword: e.target.value })}
+                        required
+                    />
+                    <IconContext.Provider value={{ size: "1.25em" }}>
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                        >
+                            {showPassword ? <BiHide /> : <BiShow />}
+                        </button>
+                    </IconContext.Provider>
+                </div>
+            </div>
+
+            {/* Confirm Password */}
+            <div className="space-y-1">
+                <label className="block text-sm text-slate-300">Confirm Password</label>
+                <div className="relative">
+                    <GiConfirmed className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        name="profilePasswordConfirm"
+                        placeholder="••••••••"
+                        className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 pl-10 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-600"
+                        value={formData.profilePasswordConfirm}
+                        onChange={(e) => setFormData({ ...formData, profilePasswordConfirm: e.target.value })}
+                        required
+                    />
+                    <IconContext.Provider value={{ size: "1.25em" }}>
+                        <button
+                            type="button"
+                            onClick={() => setShowConfirmPassword((prev) => !prev)}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                        >
+                            {showConfirmPassword ? <BiHide /> : <BiShow />}
+                        </button>
+                    </IconContext.Provider>
+                </div>
+            </div>
+
+            {/* Local + server error */}
+            {(errorMessage || actionData?.error) && (
+                <p className="text-rose-400 text-xs">{errorMessage || actionData?.error}</p>
+            )}
+
+            {/* Submit */}
+            <button
+                type="submit"
+                disabled={!formData.profileUsername || !formData.profileEmail || !formData.profilePassword || !formData.profilePasswordConfirm}
+                className={`w-full rounded-lg py-2 font-medium text-white transition
+                ${formData.profileUsername && formData.profileEmail && formData.profilePassword && formData.profilePasswordConfirm ? "bg-violet-600 hover:bg-violet-500" : "bg-slate-700 cursor-not-allowed"}`}
+            >
+                Sign Up
+            </button>
+        </Form>
+    </div>
+</div>
+</div>
     )
 }

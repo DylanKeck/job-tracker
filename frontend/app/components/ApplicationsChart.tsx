@@ -5,7 +5,7 @@ export default function ApplicationsChart({ data }:{ data:{week:string; applicat
         <div className="h-64 rounded-2xl border border-slate-800 bg-slate-900 p-4">
             <div className="flex items-center justify-between mb-2">
                 <h2 className="text-base md:text-lg font-semibold">Applications per Week</h2>
-                <div className="text-xs text-slate-400">Last {data.length} weeks</div>
+                <div className="text-xs text-slate-400">Last 4 weeks</div>
             </div>
             <div className="h-full">
                 <ResponsiveContainer width="100%" height="100%">

@@ -150,85 +150,121 @@ export default function Login() {
     }, [message]);
 
     return (
-        <>
-            <div className="container mx-auto text-center">
-                {/* Toast message for login/signup feedback */}
-                {showToast && message && (
-                    <div className="flex items-center justify-between bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6 shadow-md">
-                        <span className="block sm:inline">{message}</span>
-                        <button
-                            className="ml-4"
-                            onClick={() => setShowToast(false)}
-                            aria-label="Close"
-                        >
-                            <AiOutlineClose className="h-5 w-5 text-green-700" />
-                        </button>
-                    </div>
-                )}
-                <h1 className="text-4xl sm:text-5xl font-extrabold text-center pt-10 text-gray-900 tracking-tight">Welcome to Job Tracker</h1>
-                <p className="text-2xl">Welcome to Job Tracker.</p>
-                <div className="text-white flex flex-col items-center justify-center w-full bg-white shadow-xl rounded-3xl p-6 pb-10 space-y-10 transition-all">
-                    <div className="flex space-x-4 mb-6">
-                        {/* Login and Sign Up buttons */}
-                        <button className="bg-gradient-to-br from-blue-500 to-blue-400 text-white px-4 py-2 rounded-lg shadow transition">
-                            Login
-                        </button>
-                        <button className="hover:cursor-pointer bg-gradient-to-br from-gray-500 to-gray-400 text-white px-4 py-2 rounded-lg shadow hover:to-indigo-700 transition" onClick={() => navigate('/signup')}>
-                            Sign Up
-                        </button>
-                    </div>
-
-                    {/* Login form */}
-                    <Form method="post" onSubmit={handleSubmit} id="login-form" className="bg-gradient-to-br from-gray-100 to-gray-200 shadow-lg p-6 rounded-xl space-y-4 w-full max-w-sm" >
-                        <div className='relative'>
-                            {/* Email input with icon */}
-                            <MdOutlineEmail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"/>
-                            <input
-                                type="email"
-                                {...register("profileEmail")}
-                                placeholder="Email"
-                                className="w-full p-2 pl-10 rounded bg-zinc-500 text-white"
-                                required
-                            />
-                        </div>
-                        {errors?.profileEmail ? <p className="text-red-500">{errors?.profileEmail.message}</p> : null}
-                        <div className='relative'>
-                            {/* Password input with icon and show/hide toggle */}
-                            <RiLockPasswordLine
-                                className="absolute left-3 top-1/5 transform -translate-y-1/2 text-white"/>
-
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                {...register("profilePassword")}
-                                placeholder="Password"
-                                className="w-full p-2 pl-10 rounded bg-zinc-500 text-white"
-                                required
-                            />
-                            <IconContext.Provider value={{size: '1.5em'}}>
-                                <button type='button'
-                                        onClick={() => setShowPassword((prev) => !prev)}
-                                        className='text-sm text-white absolute right-2 top-1/5 transform -translate-y-1/2'>{showPassword ?
-                                    <BiHide/> : <BiShow/>
-                                }</button>
-                            </IconContext.Provider>
-                            {errors?.profilePassword ? <p className="text-red-500">{errors?.profilePassword.message}</p> : null}
-                            {/*<button className=" flex justify-start text-blue-400 text-sm hover:text-red-600 hover:cursor-pointer my-2">Forgot Password?</button>*/}
+            <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center px-6 py-10">
+                <div className="w-full max-w-md space-y-6">
+                    {/* Toast */}
+                    {showToast && message && (
+                        <div className="flex items-center justify-between rounded-xl border border-emerald-700 bg-emerald-900/40 px-4 py-3 text-emerald-200 shadow">
+                            <span className="text-sm">{message}</span>
                             <button
-                                type="submit"
-                                className="w-full bg-gradient-to-br from-green-400 to-green-500 hover:cursor-pointer hover:to-green-600 p-2 rounded text-white disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed" disabled={buttonDisabled}
-
-                            >Login
+                                className="ml-4 hover:text-emerald-100"
+                                onClick={() => setShowToast(false)}
+                                aria-label="Close"
+                            >
+                                <AiOutlineClose className="h-5 w-5" />
                             </button>
                         </div>
-                    </Form>
-                    {/* Error feedback for failed login */}
-                    {actionData?.error && (
-                        <div className="text-red-500 text-sm mb-4">
-                            {actionData.error}
-                        </div>
                     )}
+
+                    {/* Heading */}
+                    <div className="text-center">
+                        <h1 className="text-2xl sm:text-3xl font-semibold">Welcome to Job Tracker</h1>
+                        <p className="text-slate-400 text-sm mt-1">Sign in to continue</p>
+                    </div>
+
+                    {/* Card */}
+                    <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl space-y-6">
+                        {/* Auth toggle */}
+                        <div className="flex gap-3 justify-center">
+                            <button
+                                className="px-4 py-2 rounded-lg bg-violet-600 text-white shadow hover:bg-violet-500 transition"
+                                type="button"
+                            >
+                                Login
+                            </button>
+                            <button
+                                className="px-4 py-2 rounded-lg border border-slate-700 text-slate-300 bg-slate-800 hover:bg-slate-700 transition"
+                                type="button"
+                                onClick={() => navigate("/signup")}
+                            >
+                                Sign Up
+                            </button>
+                        </div>
+
+                        {/* Form */}
+                        <Form
+                            method="post"
+                            onSubmit={handleSubmit}
+                            id="login-form"
+                            className="space-y-4"
+                        >
+                            {/* Email */}
+                            <div className="space-y-1">
+                                <label className="block text-sm text-slate-300">Email</label>
+                                <div className="relative">
+                                    <MdOutlineEmail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input
+                                        type="email"
+                                        {...register("profileEmail")}
+                                        placeholder="you@example.com"
+                                        className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 pl-10 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-600"
+                                        required
+                                    />
+                                </div>
+                                {errors?.profileEmail && (
+                                    <p className="text-rose-400 text-xs">{String(errors.profileEmail.message)}</p>
+                                )}
+                            </div>
+
+                            {/* Password */}
+                            <div className="space-y-1">
+                                <label className="block text-sm text-slate-300">Password</label>
+                                <div className="relative">
+                                    <RiLockPasswordLine className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        {...register("profilePassword")}
+                                        placeholder="••••••••"
+                                        className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 pl-10 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-600"
+                                        required
+                                    />
+                                    <IconContext.Provider value={{ size: "1.25em" }}>
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword((prev) => !prev)}
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                                        >
+                                            {showPassword ? <BiHide /> : <BiShow />}
+                                        </button>
+                                    </IconContext.Provider>
+                                </div>
+                                {errors?.profilePassword && (
+                                    <p className="text-rose-400 text-xs">{String(errors.profilePassword.message)}</p>
+                                )}
+                            </div>
+
+                            {/* Submit */}
+                            <button
+                                type="submit"
+                                disabled={buttonDisabled}
+                                className={`w-full rounded-lg py-2 font-medium text-white transition
+                ${buttonDisabled
+                                    ? "bg-slate-700 cursor-not-allowed"
+                                    : "bg-violet-600 hover:bg-violet-500"
+                                }`}
+                            >
+                                {isSubmitting ? "Signing in…" : "Login"}
+                            </button>
+
+                            {/* Server error */}
+                            {actionData?.error && (
+                                <div className="rounded-md border border-rose-900 bg-rose-950/40 text-rose-200 text-sm px-3 py-2">
+                                    {actionData.error}
+                                </div>
+                            )}
+                        </Form>
+                    </div>
                 </div>
             </div>
-        </>
     )
 }
