@@ -4,6 +4,7 @@ export const ProfileSchema = z.object({
     profileId: z.uuid('Profile ID must be a valid UUID.'),
     profileCreatedAt: z.coerce.date('Please provide a valid date.')
         .nullable(),
+    profileEmail: z.string(),
     profileLocation: z.string('Please provide a valid location.')
         .nullable(),
     profileResumeUrl: z.string('Please provide a valid resume URL.')
