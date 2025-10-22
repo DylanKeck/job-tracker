@@ -122,6 +122,7 @@ export default function Profile({loaderData}: Route.ComponentProps) {
 
                     <Form method="post" action="/logout">
                         <button
+                            type="submit"
                             className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg text-white font-medium transition"
                         >
                             Logout

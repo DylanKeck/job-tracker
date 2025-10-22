@@ -9,10 +9,10 @@ import {redirect} from "react-router";
  * @param {Route.ActionArgs} request - Contains the request object for session destruction.
  * @returns {Promise<Response>} Redirects to /login and sets the session cookie to expire.
  */
-export async function action(request: Route.ActionArgs) {
+export async function action({request}: {request: Request}) {
     // Retrieve the current session from cookies
     const session = await getSession(
-        request.request.headers.get("Cookie"))
+        request.headers.get("Cookie"))
     // Destroy the session and redirect to login
     return redirect("/login", {
         headers: {
