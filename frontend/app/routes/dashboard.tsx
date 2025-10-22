@@ -41,7 +41,6 @@ export async function loader({request}: Route.LoaderArgs) {
     const applicationDataFetch = await fetch(`${process.env.REST_API_URL}/job/${profileId}/weekly`, {
         headers: requestHeaders
     }).then(res => res.json());
-    console.log(applicationDataFetch);
    const [jobData, reminderData] = await Promise.all([
          getJobLoaderData(request),
          getReminderLoaderData(request),

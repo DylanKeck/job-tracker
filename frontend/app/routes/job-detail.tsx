@@ -67,7 +67,6 @@ export async function action({request}: Route.ActionArgs) {
     // Parse form data
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
-    console.log(data)
     // Get jobId from URL search params
     const url = new URL(request.url)
     const jobId = url.searchParams.get("id");

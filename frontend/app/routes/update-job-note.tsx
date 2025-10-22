@@ -15,7 +15,6 @@ export async function action({request}: Route.ActionArgs) {
     );
     // Parse job note update data from request body
     const formData = await request.json();
-    console.log(formData);
     // Prepare request headers for backend API
     const requestHeaders = new Headers()
     const jobNoteId = formData.jobNoteId;

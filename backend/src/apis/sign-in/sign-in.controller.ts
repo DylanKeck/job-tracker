@@ -67,6 +67,7 @@ export async function signInController (request: Request, response: Response): P
         const signature: string = uuidv7()
         const authorization: string = generateJwt({
             profileId,
+            profileEmail,
             profileUsername,
             profileLocation,
             profileCreatedAt,
