@@ -2,11 +2,10 @@ import {SignUpProfileSchema} from "./sign-up.model.ts";
 import {zodErrorResponse} from "../../utils/response.utils.ts";
 import {setActivationToken, setHash} from "../../utils/auth.utils.ts";
 import type { Request, Response } from 'express'
-import  Mailgun from "mailgun.js";
-import formData from 'form-data'
 import type {Status} from "../../utils/interfaces/Status.ts";
 import {insertProfile, type Profile} from "../profile/profile.model.ts";
 import {v7 as uuidv7} from "uuid"
+import {sendEmail} from "../../utils/email/ses.ts";
 
 
 // Controller for handling user sign-up
@@ -29,15 +28,7 @@ try {
     const basePath: string = `${request.protocol}://job-tracker.dev/activate/${profileActivationToken}`
     const message = `<h2>Welcome to Job Tracker!</h2><p>Please click the link below to activate your account.</p><a href="${basePath}">${basePath}</a>`
 
-    // Initialize Mailgun client for sending emails
-    const mailgun: Mailgun = new Mailgun(formData)
-    const mailgunClient = mailgun.client({username: 'api' , key: process.env.MAILGUN_API_KEY as string})
-    const mailgunMessage = {
-        from: `Mailgun Sandbox <postmaster@${process.env.MAILGUN_DOMAIN as string}>`,
-        to: profileEmail,
-        subject: 'Activate your Job Tracker account',
-        html: message
-    }
+
 
     // Create a new profile object
     const profile: Profile = {
@@ -54,7 +45,12 @@ try {
     // Insert the new profile into the database
     await insertProfile(profile)
     // Send activation email to the user
-    await mailgunClient.messages.create(process.env.MAILGUN_DOMAIN as string, mailgunMessage)
+    await sendEmail({
+        to: profileEmail,
+        subject: 'Activate Your Job Tracker Account',
+        html: message,
+
+    })
     const status: Status = {status: 200, message: 'Profile created successfully.', data: null}
     response.status(200).json(status)
 
