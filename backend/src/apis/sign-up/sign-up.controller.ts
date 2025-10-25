@@ -26,7 +26,7 @@ try {
     const profileActivationToken = setActivationToken()
 
     // Construct activation link for the user
-    const basePath: string = `${request.protocol}://localhost:5173/activate/${profileActivationToken}`
+    const basePath: string = `${request.protocol}://job-tracker.dev/activate/${profileActivationToken}`
     const message = `<h2>Welcome to Job Tracker!</h2><p>Please click the link below to activate your account.</p><a href="${basePath}">${basePath}</a>`
 
     // Initialize Mailgun client for sending emails
