@@ -23,7 +23,7 @@ import {getValidatedFormData, useRemixForm} from "remix-hook-form";
  */
 export function meta({}: Route.MetaArgs) {
     return [
-        { title: "Commonality" },
+        { title: "Job Tracker" },
         { name: "description", content: "please sign in or sign up" },
     ];
 }

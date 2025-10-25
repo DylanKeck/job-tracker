@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/DylanKeck/job-tracker#readme",
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.917.0",
     "argon2": "^0.44.0",
     "bcrypt": "^6.0.0",
     "connect-redis": "^9.0.0",
