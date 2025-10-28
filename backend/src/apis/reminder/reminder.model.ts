@@ -74,6 +74,18 @@ export async function deleteReminder(reminderId: string): Promise<string> {
 }
 
 /**
+ * Deletes all reminders associated with a given jobId.
+ *
+ * @param reminderJobId - The job ID to delete reminders for
+ * @returns Success message string
+ */
+export async function deleteRemindersByJobId(reminderJobId: string): Promise<string> {
+    // Delete reminders from the database by jobId
+    await sql`DELETE FROM reminder WHERE reminder_job_id = ${reminderJobId}`
+    return 'Deleted reminders for the job';
+}
+
+/**
  * Selects all reminders for a given jobId.
  *
  * @param reminderJobId - The job ID to filter reminders by

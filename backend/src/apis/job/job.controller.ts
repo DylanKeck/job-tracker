@@ -12,6 +12,7 @@ import {ProfileSchema} from "../profile/profile.model.ts";
 import {serverErrorResponse, zodErrorResponse} from "../../utils/response.utils.ts";
 import type {Status} from "../../utils/interfaces/Status.ts";
 import {v7 as uuidv7} from "uuid"
+import {deleteRemindersByJobId} from "../reminder/reminder.model.ts";
 
 
 /**
@@ -301,6 +302,7 @@ export async function deleteJobController(request: Request, response: Response):
             return
         }
         // Delete all job notes for the job
+        const jobRemindersDelete = await deleteRemindersByJobId(jobId)
         const jobNoteDelete = await deleteJobNote(jobId)
         // Delete the job itself
         const result = await deleteJobByJobId(jobId)

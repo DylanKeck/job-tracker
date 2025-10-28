@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS profile
     profile_location         text,
     profile_password_hash    char(97)                NOT NULL,
     profile_resume_url       varchar(255),
-    profile_username         varchar(100) UNIQUE NOT NULL
+    profile_username         varchar(100)  NOT NULL
 );
 
 -- job

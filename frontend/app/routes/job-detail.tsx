@@ -161,6 +161,7 @@ export default function JobDetail({loaderData}: Route.ComponentProps) {
     const fetcher = useFetcher()
     const navigation = useNavigation();
     const wasSubmitting = useRef(false);
+    const deleteFetcher = useFetcher();
 
     // Effect to close edit mode after submit completes
     useEffect(() => {
@@ -377,8 +378,17 @@ export default function JobDetail({loaderData}: Route.ComponentProps) {
                                 <h3 className="text-sm font-semibold text-rose-300">Danger Zone</h3>
                                 <p className="text-xs text-rose-200/70">Delete this job and its notes</p>
                             </div>
-                            <Form method="post" action={`/jobs/delete?id=${job.jobId}`}>
+                            <Form >
                                 <button
+                                    onClick={() => {
+                                        deleteFetcher.submit(
+                                            {jobId: job.jobId},{
+                                                method: "DELETE",
+                                                action: "/api/job-delete",
+                                                encType: "application/json",
+                                            }
+                                        )
+                                    }}
                                     type="submit"
                                     className="rounded-lg border border-rose-900 bg-rose-900/40 hover:bg-rose-900/60 text-rose-200 px-3 py-2 text-xs transition"
                                 >
