@@ -5,7 +5,7 @@ import type { Request, Response } from 'express'
 import type {Status} from "../../utils/interfaces/Status.ts";
 import {insertProfile, type Profile} from "../profile/profile.model.ts";
 import {v7 as uuidv7} from "uuid"
-import {sendEmail} from "../../utils/email/ses.ts";
+import {sendEmail} from "../../utils/email/resend.ts";
 
 
 // Controller for handling user sign-up
