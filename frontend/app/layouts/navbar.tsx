@@ -114,9 +114,9 @@ export default function Navbar({loaderData}: Route.ComponentProps) {
                             <NavLink to="/dashboard" className={linkClass} onClick={() => setOpen(false)}>Dashboard</NavLink>
                             <NavLink to="/jobs" className={linkClass} onClick={() => setOpen(false)}>Jobs</NavLink>
                             <NavLink to="/reminders" className={linkClass} onClick={() => setOpen(false)}>Reminders</NavLink>
-                            <NavLink to="/analytics" className={linkClass} onClick={() => setOpen(false)}>Analytics</NavLink>
+                            <NavLink to="/profile" className={linkClass} onClick={() => setOpen(false)}>Profile</NavLink>
                             <Link
-                                to="/jobs/new"
+                                to="/add-job"
                                 onClick={() => setOpen(false)}
                                 className="block mt-2 text-center bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium px-3 py-2 rounded-lg transition"
                             >
