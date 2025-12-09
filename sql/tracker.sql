@@ -130,3 +130,6 @@ INSERT INTO reminder (reminder_id, reminder_job_id, reminder_label, reminder_at,
                                                                                                                          ('0199c004-e444-7ccc-8e44-444444444444','0199a00b-bbbb-7aaa-8abb-bbbbbbbbbbbb','Follow up on Fabrik application','2025-10-24 09:00:00',false,'2025-10-21 11:15:00');
 
 COMMIT;
+
+ALTER TABLE job
+    ADD COLUMN job_parsed jsonb;
