@@ -11,6 +11,7 @@ import {signInRoute} from "./apis/sign-in/sign-in.route.ts";
 import {jobRoute} from "./apis/job/job.route.ts";
 import {documentRoute} from "./apis/document/document.route.ts";
 import {reminderRoute} from "./apis/reminder/reminder.route.ts";
+import {parsedJobRoute} from "./apis/parsed-job/parsed-job.route.ts";
 export class App {
     app: Application
     redisStore : RedisStore
@@ -47,6 +48,7 @@ export class App {
         this.app.use(jobRoute.basePath, jobRoute.router)
         this.app.use(documentRoute.basePath, documentRoute.router)
         this.app.use(reminderRoute.basePath, reminderRoute.router)
+        this.app.use(parsedJobRoute.basePath, parsedJobRoute.router)
     }
 
     // starts the server and tells the terminal to post a message that the server is running and on what port
