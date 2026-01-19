@@ -2,11 +2,10 @@
 import { Router } from "express";
 import { importParsedJobFromUrl } from "./parsed-job.controller";
 
-const basePath = '/api/parsed-job';
+const basePath = "/api/parsed-job";
 const router = Router();
 
 // POST /api/parsed-job/import-from-url
-router.route('/')
-    .post("/import-from-url", importParsedJobFromUrl);
+router.route("/:import-from-url").post(importParsedJobFromUrl);
 
 export const parsedJobRoute = { basePath, router };
