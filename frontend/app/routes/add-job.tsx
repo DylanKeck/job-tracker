@@ -21,6 +21,8 @@ export async function action({request}: Route.ActionArgs) {
         const formData = await request.formData();
         const newJob = Object.fromEntries(formData);
         const profileId = session.data.profile?.profileId;
+        const url = formData.get("url") as string;
+
 
         // Construct job object for API
         const job = {
@@ -83,6 +85,12 @@ export default function AddJob() {
         <>
             <h1 className="text-4xl font-bold mb-4">New Job</h1>
            {/* EditJob component renders the job form */}
+            <Form>
+                <input
+                    type="text"
+                    name="url"
+                />
+            </Form>
            <EditJob  />
         </>
     )
